@@ -16,15 +16,58 @@
     </div>
   </div>
 
+  <div class="container">
+    <h1>Speak some words <small>say something and we'll show you the words</small></h1>
+    <p>Check the confidence score if it's below 80% you probably should say it again.</p>
+    <div class="row">
+      <form id="listen">
+        <p id="confidence"></p>
+        <textarea id="results" class="col-md-12" style="height:300px" name="check" spellcheck="true"></textarea>
+        <input type="submit" value="Capture some words" class="btn btn-primary col-md-12"/>
+      </form>
+    </div>
+  </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
-  $(runme);
-  function runme() {
+  $(RunMe);
+  function SaySomething() {
     var speech = new SpeechSynthesisUtterance();
+    var clicked= false;
     $("#spell").submit(function(e) { e.preventDefault();
+      if (clicked) { return; }; clicked = true;
+
       speech.text = $("#readit").val();
+      speech.onend = function() { clicked = false; }
       window.speechSynthesis.speak(speech);
     });
+  }
+  function ListenForWords() {
+    var clicked= false;
+    var recognition = new webkitSpeechRecognition();
+    $("#listen").submit(function(e) { e.preventDefault();
+      if (clicked) { return; }; clicked = true;
+      var txt = $("#listen input[type=submit]").val();
+      $("#listen input[type=submit]").val("say something");
+      $("#listen input[type=submit]").addClass("btn-default");
+      recognition.onresult = function(event) {
+        console.log("result:", event);
+        if (event.results.length > 0 && event.results[0].length > 0) {
+          $("#results").val(event.results[0][0].transcript);
+          $("#confidence").html( (event.results[0][0].confidence*100) + "%" );
+        }
+      }
+      recognition.onend = function(event) {
+        clicked = false;
+        $("#listen input[type=submit]").val(txt);
+        $("#listen input[type=submit]").removeClass("btn-default");
+      }
+      recognition.start();
+    });
+  }
+  function RunMe() {
+    SaySomething();
+    ListenForWords();
   }
 </script>
 </body>
