@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <title>Spell Help with Speech</title>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css"/>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Hear your words <small>type some words and listen</small></h1>
+    <div class="row">
+      <form id="spell">
+        <textarea id="readit" class="col-md-12" style="height:300px" name="check" spellcheck="true"></textarea>
+        <input type="submit" value="Check" class="btn btn-primary col-md-12"/>
+      </form>
+    </div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+  $(runme);
+  function runme() {
+    var speech = new SpeechSynthesisUtterance();
+    $("#spell").submit(function(e) { e.preventDefault();
+      speech.text = $("#readit").val();
+      window.speechSynthesis.speak(speech);
+    });
+  }
+</script>
+</body>
+</html>
